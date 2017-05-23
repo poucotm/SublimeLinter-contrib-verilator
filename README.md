@@ -1,73 +1,82 @@
 SublimeLinter-contrib-verilator
 ================================
 
+[![Package Control](https://packagecontrol.herokuapp.com/downloads/SublimeLinter-contrib-verilator.svg?style=flat-square)](https://packagecontrol.io/packages/SublimeLinter-contrib-verilator)
 [![Build Status](https://travis-ci.org/SublimeLinter/SublimeLinter-contrib-verilator.svg?branch=master)](https://travis-ci.org/SublimeLinter/SublimeLinter-contrib-verilator)
 
-This linter plugin for [SublimeLinter][docs] provides an interface to [verilator](__linter_homepage__). It will be used with files that have the “__syntax__” syntax.
+This linter plugin for [SublimeLinter][docs] provides an interface to **Verilator**.
+**Verilator** is a open source HDL simulator and can be used as a linter with --lint-only option.
+For more information, you can check here, [https://www.veripool.org/wiki/verilator][linter_homepage]
+**Verilator** is fast and easy to use to link with Sublime Text Editor on variable OS, before runnning commercial simulaton and synthesis tools.
 
-## Installation
-SublimeLinter 3 must be installed in order to use this plugin. If SublimeLinter 3 is not installed, please follow the instructions [here][installation].
+### Prerequisite
 
-### Linter installation
-Before using this plugin, you must ensure that `verilator` is installed on your system. To install `verilator`, do the following:
+- **SublimeLinter 3 installation** - Guide from [here][installation]
+- **Verilator installation** - Guide from [here][linter-install]
+- **Verilator settings** - SublimeLinter-contrib-verilator uses ```verilator_bin``` or ```verilator_bin.exe``` instead of ```verilator```. You have to add ```PATH``` environment for ```verilator_bin``` or ```verilator_bin.exe```
+- **Modified version of Verilator** - For linting single file, it is modified to ignore `include files and other module files. You can get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator). ```-Wno-IGNINC, -Wno-IGNMOD, -Wno-IGNDEF, -Wno-IGNUNUSED``` options are added. Installation is the same as original after getting by cloning or downloading.
 
-1. Install Other.
+### Screenshot
 
-1. Install `verilator` by typing the following in a terminal:
-   ```
-   <package manager> install verilator
-   ```
+![Image](https://raw.githubusercontent.com/poucotm/Links/master/image/verilator.png)
 
+### Settings
 
-**Note:** This plugin requires `verilator` __version__ or later.
+In order to set arguments of Verilator or control lint message, Use SublimeLinter's user settings like the following.
 
-### Linter configuration
-In order for `verilator` to be executed by SublimeLinter, you must ensure that its path is available to SublimeLinter. Before going any further, please read and follow the steps in [“Finding a linter executable”](http://sublimelinter.readthedocs.org/en/latest/troubleshooting.html#finding-a-linter-executable) through “Validating your PATH” in the documentation.
+```js
+      "verilator": {
+          "@disable": false,
+          "args": [
+              "--error-limit",
+              "500",
+              "--default-language",
+              "1800-2012",
+              "--bbox-sys",
+              "--bbox-unsup",
+              "-Wall",
+              "-Wno-DECLFILENAME",
+              "-Wno-IGNINC",
+              "-Wno-IGNMOD",
+              "-Wno-IGNDEF",
+              "-Wno-IGNUNUSED",
+              "-Wno-WIDTH",
+              "-Wno-CASEX",
+              "-Wno-STMTDLY"
+          ],
+          "excludes": [],
+          "extension": [
+              ".v"
+          ],
+          "ignore_match": [
+              "Unsupported:",
+              "\\[IGNDEF\\]"
+          ]
+      }
+```
 
-Once you have installed and configured `verilator`, you can proceed to install the SublimeLinter-contrib-verilator plugin if it is not yet installed.
+### Troubleshooting
 
-### Plugin installation
-Please use [Package Control][pc] to install the linter plugin. This will ensure that the plugin will be updated when new versions are available. If you want to install from source so you can modify the source code, you probably know what you are doing so we won’t cover that here.
+Turn on SublimeLinter's ```Debug Mode``` and Open the console of Sublime Text. You can check the communication status from SublimeLinter to Verilator.
+You can also add more ```ignore_match``` message by using them.
 
-To install via Package Control, do the following:
+```
+SublimeLinter: verilator: shift_reg.v ['D:\\Program\\verilator-3.902\\verilator_bin.exe', '--lint-only', ...
+SublimeLinter: verilator output:
+%Warning-LITENDIAN: c:/users/shift_reg.v:14: Little bit endian vector: MSB < LSB of bit range: 0:7
+%Warning-LITENDIAN: Use "/* verilator lint_off LITENDIAN */" and lint_on around source to disable this message.
+%Error: Exiting due to 1 warning(s)
+```
 
-1. Within Sublime Text, bring up the [Command Palette][cmd] and type `install`. Among the commands you should see `Package Control: Install Package`. If that command is not highlighted, use the keyboard or mouse to select it. There will be a pause of a few seconds while Package Control fetches the list of available plugins.
+### Credits
 
-1. When the plugin list appears, type `verilator`. Among the entries you should see `SublimeLinter-contrib-verilator`. If that entry is not highlighted, use the keyboard or mouse to select it.
+Thanks to SublimeLinter Team and Veripool Organization.
 
-## Settings
-For general information on how SublimeLinter works with settings, please see [Settings][settings]. For information on generic linter settings, please see [Linter Settings][linter-settings].
+### issues
 
-In addition to the standard SublimeLinter settings, SublimeLinter-contrib-verilator provides its own settings. Those marked as “Inline Setting” or “Inline Override” may also be [used inline][inline-settings].
-
-|Setting|Description|Inline Setting|Inline Override|
-|:------|:----------|:------------:|:-------------:|
-|foo|Something.|&#10003;| |
-|bar|Something else.| |&#10003;|
-
-## Contributing
-If you would like to contribute enhancements or fixes, please do the following:
-
-1. Fork the plugin repository.
-1. Hack on a separate topic branch created from the latest `master`.
-1. Commit and push the topic branch.
-1. Make a pull request.
-1. Be patient.  ;-)
-
-Please note that modifications should follow these coding guidelines:
-
-- Indent is 4 spaces.
-- Code should pass flake8 and pep257 linters.
-- Vertical whitespace helps readability, don’t be afraid to use it.
-- Please use descriptive variable names, no abbreviations unless they are very well known.
-
-Thank you for helping out!
+When you have an issue, tell me through [https://github.com/poucotm/SublimeLinter-contrib-verilator/issues](https://github.com/poucotm/SublimeLinter-contrib-verilator/issues), or send me an e-mail poucotm@gmail.com, yongchan.jeon@samsung.com
 
 [docs]: http://sublimelinter.readthedocs.org
+[linter_homepage]: https://www.veripool.org/wiki/verilator
 [installation]: http://sublimelinter.readthedocs.org/en/latest/installation.html
-[locating-executables]: http://sublimelinter.readthedocs.org/en/latest/usage.html#how-linter-executables-are-located
-[pc]: https://sublime.wbond.net/installation
-[cmd]: http://docs.sublimetext.info/en/sublime-text-3/extensibility/command_palette.html
-[settings]: http://sublimelinter.readthedocs.org/en/latest/settings.html
-[linter-settings]: http://sublimelinter.readthedocs.org/en/latest/linter_settings.html
-[inline-settings]: http://sublimelinter.readthedocs.org/en/latest/settings.html#inline-settings
+[linter-install]: https://www.veripool.org/projects/verilator/wiki/Installing

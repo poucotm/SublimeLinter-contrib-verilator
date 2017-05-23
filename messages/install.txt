@@ -7,4 +7,4 @@ This linter plugin for SublimeLinter provides an interface to verilator.
 Before this plugin will activate, you *must*
 follow the installation instructions here:
 
-https://github.com/poucotm/SublimeLinter-contrib-verilator
+https://packagecontrol.io/packages/SublimeLinter-contrib-verilator
