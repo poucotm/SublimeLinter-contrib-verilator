@@ -1,7 +1,6 @@
 SublimeLinter-contrib-verilator
 ================================
 
-[![Package Control](https://packagecontrol.herokuapp.com/downloads/SublimeLinter-contrib-verilator.svg?style=flat-square)](https://packagecontrol.io/packages/SublimeLinter-contrib-verilator)
 [![Build Status](https://travis-ci.org/SublimeLinter/SublimeLinter-contrib-verilator.svg?branch=master)](https://travis-ci.org/SublimeLinter/SublimeLinter-contrib-verilator)
 
 This linter plugin for [SublimeLinter][docs] provides an interface to **Verilator**.
