@@ -13,7 +13,7 @@ For more information, you can check here, [https://www.veripool.org/wiki/verilat
 - **SublimeLinter 3 installation** - Guide from [here][installation]
 - **Verilator installation** - Guide from [here][linter-install]
 - **Verilator settings** - SublimeLinter-contrib-verilator uses ```verilator_bin``` or ```verilator_bin.exe``` instead of ```verilator```. You have to add ```PATH``` environment for ```verilator_bin``` or ```verilator_bin.exe```
-- **Modified version of Verilator** - For linting single file, it is modified to ignore `include files and other module files. You can get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator). ```-Wno-IGNINC, -Wno-IGNMOD, -Wno-IGNDEF, -Wno-IGNUNUSED``` options are added. Installation is the same as original after getting by cloning or downloading.
+- **Modified version of Verilator** - For linting single file, it is modified to ignore include files and other module files. You can get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator). ```-Wno-IGNINC, -Wno-IGNMOD, -Wno-IGNDEF, -Wno-IGNUNUSED``` options are added. Installation is the same as original after getting by cloning or downloading.
 
 ### Screenshot
 
