@@ -1,7 +1,7 @@
 SublimeLinter-contrib-verilator
 ================================
 
-[![Package Control](https://packagecontrol.herokuapp.com/downloads/SublimeLinter-contrib-verilator.svg?style=flat-square)](https://packagecontrol.io/packages/SublimeLinter-contrib-verilator) [![Build Status](https://api.travis-ci.org/poucotm/SublimeLinter-contrib-verilator.svg?branch=master)](https://travis-ci.org/poucotm/SublimeLinter-contrib-verilator)
+[![Package Control](https://packagecontrol.herokuapp.com/downloads/SublimeLinter-contrib-verilator.svg?style=round-square)](https://packagecontrol.io/packages/SublimeLinter-contrib-verilator) [![Build Status](https://api.travis-ci.org/poucotm/SublimeLinter-contrib-verilator.svg?branch=master)](https://travis-ci.org/poucotm/SublimeLinter-contrib-verilator)
 
 This linter plugin for [SublimeLinter][docs] provides an interface to **Verilator**.
 **Verilator** is a open source HDL simulator and can be used as a linter with --lint-only option.
