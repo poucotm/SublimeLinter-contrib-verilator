@@ -71,6 +71,17 @@ class Verilator(Linter):
         else:
             self.errors[line] = [message]
 
+    def find_errors(self, output):
+        """override find_errors() for file name based filtering"""
+
+        foutput = ''
+        for line in output.splitlines():
+            if line.find(self.tmpfilename+':') != -1:
+                foutput += line
+
+        # call parent's
+        return super(Verilator, self).find_errors(foutput)
+
     def tmpfile(self, cmd, code, suffix=''):
         """override tmpfile() for windows"""
 
@@ -82,6 +93,7 @@ class Verilator(Linter):
             file = os.path.splitext(self.filename)[0] + suffix
 
         path = os.path.join(self.tempdir, file)
+        self.tmpfilename = file
 
         try:
             with open(path, mode='wb') as f:
