@@ -54,6 +54,13 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
       }
 ```
 
+### Keymap
+
+```
+'F1' : SublimeLinter Show All Errors
+'Shift+F1' : SublimeLinter Lint This View
+```
+
 ### Troubleshooting
 
 Turn on SublimeLinter's ```Debug Mode``` and Open the console of Sublime Text. You can check the communication status from SublimeLinter to Verilator.
