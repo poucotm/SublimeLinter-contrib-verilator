@@ -1,23 +1,34 @@
-SublimeLinter-contrib-verilator
-================================
+# SublimeLinter-contrib-verilator
 
 [![Package Control](https://packagecontrol.herokuapp.com/downloads/SublimeLinter-contrib-verilator.svg?style=round-square)](https://packagecontrol.io/packages/SublimeLinter-contrib-verilator) [![Build Status](https://api.travis-ci.org/poucotm/SublimeLinter-contrib-verilator.svg?branch=master)](https://travis-ci.org/poucotm/SublimeLinter-contrib-verilator)
+[![PayPal](https://img.shields.io/badge/paypal-donate-blue.svg)][PM]
 
-This linter plugin for [SublimeLinter][docs] provides an interface to **Verilator**.
-**Verilator** is a open source HDL simulator and can be used as a linter with --lint-only option.
-For more information, you can check here, [https://www.veripool.org/wiki/verilator][linter_homepage]
-**Verilator** is fast and easy to use to link with Sublime Text Editor on variable OS, before runnning commercial simulaton and synthesis tools.
+This linter plugin for [SublimeLinter][docs] provides an interface to __Verilator__.
+__Verilator__ is a open source HDL simulator and can be used as a linter with --lint-only option.
+For more information, you can see here, [https://www.veripool.org/wiki/verilator][linter_homepage]
+**Verilator** is fast and easy to use to link with Sublime Text Editor on variable OS before runnning commercial simulaton and synthesis tools.
 
 ### Prerequisite
 
-- **SublimeLinter 3 installation** - Guide from [here][installation]
-- **Verilator installation** - Guide from [here][linter-install]
-- **Verilator settings** - SublimeLinter-contrib-verilator uses ```verilator_bin``` or ```verilator_bin.exe``` instead of ```verilator```. You have to add ```PATH``` environment for ```verilator_bin``` or ```verilator_bin.exe```
-- **Modified version of Verilator** - For linting single file, it is modified to ignore include files and other module files. You can get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator). ```-Wno-IGNINC, -Wno-IGNMOD, -Wno-IGNDEF, -Wno-IGNUNUSED``` options are added. Installation is the same as original after getting by cloning or downloading.
+ * __SublimeLinter 3 installation__ - Guide from [here][installation]
+ * __Verilator installation__ - Guide from [here][linter-install]
+ * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)
+ * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
+
+#### Verilator Original vs. Modified Version
+
+__Verilator__ originally simulates all entities having all __*include*__ and __*module*__ files. If you miss even a file, it will generate an error message and stop simulation or linting. It is not good to be used with a editor. People don't open all files to edit or it is tired to pass the file list to Verilator every time. In order to lint single file based, the original codes are modified. It can ignore __*include*__ and externally defined module's instance and its port connection even if there's a real error in port connection. You can select one of them. If you want to use original version, you may have to put all files in the same directory. Because, __Verilator__ basically searches missed files in the same directory.
+
+#### Options for Modified Version
+
+ * -Wno-IGNINC : Ignores __*include*__ files
+ * -Wno-IGNDEF : Ignores __*define*__ which may have been defined outside
+ * -Wno-IGNMOD : Ignores __*module*__ instances
+ * -Wno-IGNUNUSED : Ignore __*unused singnal*__ warning connected to externally defined module instance
 
 ### Screenshot
 
-![Image](https://raw.githubusercontent.com/poucotm/Links/master/image/verilator.png)
+![Image](https://raw.githubusercontent.com/poucotm/Links/master/image/SublimeLinter-Contrib-Verilator/vl-cap.gif)
 
 ### Settings
 
@@ -54,17 +65,15 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
       }
 ```
 
-### Keymap
+### Key Map
 
-```
-'F1' : SublimeLinter Show All Errors
-'Shift+F1' : SublimeLinter Lint This View
-```
+__'F1'__ : SublimeLinter Show All Errors  
+__'Shift+F1'__ : SublimeLinter Lint This View
 
 ### Troubleshooting
 
-Turn on SublimeLinter's ```Debug Mode``` and Open the console of Sublime Text. You can check the communication status from SublimeLinter to Verilator.
-You can also add more ```ignore_match``` message by using them.
+Turn on SublimeLinter's __*Debug Mode*__ and Open the console of Sublime Text. You can check the communication status from SublimeLinter to Verilator.
+You can also add your own __*ignore_match*__ messages by using them.
 
 ```
 SublimeLinter: verilator: shift_reg.v ['D:\\Program\\verilator-3.902\\verilator_bin.exe', '--lint-only', ...
@@ -74,15 +83,22 @@ SublimeLinter: verilator output:
 %Error: Exiting due to 1 warning(s)
 ```
 
+### Donate
+
+[![Doate Image](https://raw.githubusercontent.com/poucotm/Links/master/image/PayPal/donate-paypal.png)][PM]  
+Thank you for donating. It is helpful to continue to improve the plug-in.
+
 ### Credits
 
-Thanks to SublimeLinter Team and Veripool Organization.
+Thanks to [__SublimeLinter Team__](https://github.com/SublimeLinter/SublimeLinter3) and [__Veripool Organization__](https://www.veripool.org).
 
-### issues
+### Issues
 
-When you have an issue, tell me through [https://github.com/poucotm/SublimeLinter-contrib-verilator/issues](https://github.com/poucotm/SublimeLinter-contrib-verilator/issues), or send me an e-mail poucotm@gmail.com, yongchan.jeon@samsung.com
+When you have an issue, tell me through [https://github.com/poucotm/SublimeLinter-contrib-verilator/issues](https://github.com/poucotm/SublimeLinter-contrib-verilator/issues), or send me an e-mail poucotm@gmail.com
 
 [docs]: http://sublimelinter.readthedocs.org
 [linter_homepage]: https://www.veripool.org/wiki/verilator
 [installation]: http://sublimelinter.readthedocs.org/en/latest/installation.html
 [linter-install]: https://www.veripool.org/projects/verilator/wiki/Installing
+[PP]:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=89YVNDSC7DZHQ "PayPal"
+[PM]:https://www.paypal.me/poucotm/2.5 "PayPal"
