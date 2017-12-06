@@ -16,6 +16,8 @@ import tempfile
 import getpass
 import re
 
+# translate off/on
+SYN_PAT = r"\/\*\s*synopsys\s+translate_off\s*\*\/.*?\/\*\s*synopsys\s+translate_on\s*\*\/[\n\r]"
 
 class Verilator(Linter):
     """Provides an interface to verilator."""
@@ -98,7 +100,8 @@ class Verilator(Linter):
         try:
             with open(path, mode='wb') as f:
                 if isinstance(self.code, str):
-                    code = self.code.encode('utf-8')
+                    code = self.mask_code(self.code)
+                    code = code.encode('utf-8')
                 f.write(code)
                 f.flush()
 
@@ -119,3 +122,11 @@ class Verilator(Linter):
             return util.communicate(cmd, output_stream=self.error_stream, env=self.env)
         finally:
             os.remove(path)
+
+    def mask_code(self, code):
+        txts = re.compile(SYN_PAT, re.DOTALL).findall(code)
+        for txt in txts:
+            nlines = len(txt.splitlines())
+            repstr = '\n' * nlines
+            code = code.replace(txt, repstr)
+        return code
