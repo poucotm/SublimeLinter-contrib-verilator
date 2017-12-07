@@ -16,8 +16,10 @@ import tempfile
 import getpass
 import re
 
+
 # translate off/on
 SYN_PAT = r"\/\*\s*synopsys\s+translate_off\s*\*\/.*?\/\*\s*synopsys\s+translate_on\s*\*\/[\n\r]"
+
 
 class Verilator(Linter):
     """Provides an interface to verilator."""
