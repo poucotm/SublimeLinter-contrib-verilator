@@ -10,7 +10,7 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
 ### Prerequisite
 
- * __SublimeLinter 3 installation__ - Guide from [here][installation]
+ * __SublimeLinter 3 installation__ - Guide from [here][installation]. Currently, only support 3 not 4. Download from [here][download]
  * __Verilator installation__ - Guide from [here][linter-install]
  * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
@@ -98,7 +98,8 @@ When you have an issue, tell me through [https://github.com/poucotm/SublimeLinte
 
 [docs]: http://sublimelinter.readthedocs.org
 [linter_homepage]: https://www.veripool.org/wiki/verilator
-[installation]: http://sublimelinter.readthedocs.org/en/latest/installation.html
+[installation]: https://packagecontrol.io/packages/SublimeLinter
+[download]: https://github.com/SublimeLinter/SublimeLinter/releases/tag/v3.10.10
 [linter-install]: https://www.veripool.org/projects/verilator/wiki/Installing
 [PP]:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=89YVNDSC7DZHQ "PayPal"
 [PM]:https://www.paypal.me/poucotm/2.5 "PayPal"
