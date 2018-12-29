@@ -12,7 +12,7 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 3 installation__ - Guide from [here][installation]. Currently, only support 3 not 4. Download from [here][download]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)
+ * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator), or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 #### Verilator Original vs. Modified Version
