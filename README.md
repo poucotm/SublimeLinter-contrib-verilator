@@ -10,7 +10,7 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
 ### Prerequisite
 
- * __SublimeLinter 3 installation__ - Guide from [here][installation]. Currently, only support 3 not 4. Download from [here][download]
+ * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
  * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator), or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
@@ -35,34 +35,39 @@ __Verilator__ originally simulates all entities having all __*include*__ and __*
 In order to set arguments of Verilator or control lint message, Use SublimeLinter's user settings like the following.
 
 ```js
-      "verilator": {
-          "@disable": false,
-          "args": [
-              "--error-limit",
-              "500",
-              "--default-language",
-              "1800-2012",
-              "--bbox-sys",
-              "--bbox-unsup",
-              "-Wall",
-              "-Wno-DECLFILENAME",
-              "-Wno-IGNINC",
-              "-Wno-IGNMOD",
-              "-Wno-IGNDEF",
-              "-Wno-IGNUNUSED",
-              "-Wno-WIDTH",
-              "-Wno-CASEX",
-              "-Wno-STMTDLY"
-          ],
-          "excludes": [],
-          "extension": [
-              ".v"
-          ],
-          "ignore_match": [
-              "Unsupported:",
-              "\\[IGNDEF\\]"
-          ]
-      }
+{
+    "no_column_highlights_line": true,
+    "linters":
+    {
+        "verilator": {
+            "lint_mode": "load_save",
+            "args": [
+                "--error-limit",
+                "500",
+                "--default-language",
+                "1800-2012",
+                "--bbox-sys",
+                "--bbox-unsup",
+                "-Wall",
+                "-Wno-DECLFILENAME",
+                "-Wno-IGNINC",
+                "-Wno-IGNMOD",
+                "-Wno-IGNDEF",
+                "-Wno-IGNUNUSED",
+                "-Wno-WIDTH",
+                "-Wno-STMTDLY"
+            ],
+            "excludes": [],
+            "extension": [
+                ".v"
+            ],
+            "ignore_match": [
+                "Unsupported:",
+                "\\[IGNDEF\\]"
+            ]
+        }
+    }
+}
 ```
 
 ### Key Map

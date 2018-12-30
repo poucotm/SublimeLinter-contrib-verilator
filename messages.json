@@ -2,5 +2,6 @@
     "install": "messages/install.txt",
     "v1.1.0" : "changelog/v1.1.0.txt",
     "v1.3.0" : "changelog/v1.3.0.md",
-    "v1.3.2" : "changelog/v1.3.2.md"
+    "v1.3.2" : "changelog/v1.3.2.md",
+    "v2.0.0" : "changelog/v2.0.0.md"
 }
