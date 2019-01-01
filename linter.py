@@ -9,7 +9,7 @@
 """This module exports the Verilator plugin class."""
 
 from SublimeLinter.lint import Linter
-from SublimeLinter.lint.linter import make_temp_file, get_view_context
+from SublimeLinter.lint.linter import make_temp_file, get_view_context, MATCH_DICT, LintMatch
 import sublime
 import os
 import re
@@ -26,10 +26,12 @@ SYN_PAT = \
 class Verilator(Linter):
     """Provides an interface to verilator."""
 
-    syntax = ('verilog', 'systemverilog')
     cmd = ('verilator_bin', '--lint-only')
     tempfile_suffix = 'verilog'
     multiline = False
+    defaults = {
+        'selector' : 'source.verilog, source.systemverilog'
+    }
 
     if sublime.platform() == 'windows':
         filepath = r'[^:]+:[^:]+'
@@ -37,16 +39,17 @@ class Verilator(Linter):
         filepath = r'[^:]+'
 
     regex = (
-        r'((?P<warning>%Warning.*: )|(?P<error>%Error.*: |))'
+        r'((?P<warning>%Warning)|(?P<error>%Error))'
+        r'(-(?P<code>.*?)|(.*?)): '
         r'(?P<file>{0}):(?P<line>\d+): '
         r'(?P<message>.*)'
         .format(filepath)
     )
 
+    """ SublimeLinter 4 """
     def lint(self, code, view_has_changed):
-        """Override lint() to check file extension"""
+        """Override lint() for to check file extension"""
 
-        # Check file extension
         vls = self.get_view_settings()
         ext_setting = vls.get('extension', [])
         if len(ext_setting) > 0:
@@ -57,10 +60,55 @@ class Verilator(Linter):
         return super(Verilator, self).lint(code, view_has_changed)
 
     def parse_output(self, proc, virtual_view):
+        """Override parse_output()"""
+
         output = proc.combined_output
         return self.parse_output_via_regex(output, virtual_view)
 
+    def split_match(self, match):
+        """Override split_match()"""
+
+        match_dict = MATCH_DICT.copy()
+
+        match_dict.update({
+            k: v
+            for k, v in match.groupdict().items()
+            if k in match_dict
+        })
+        match_dict["match"] = match
+
+        line = match_dict["line"]
+        if line:
+            match_dict["line"] = int(line) - self.line_col_base[0]
+        else:
+            match_dict["line"] = None
+
+        col = match_dict["col"]
+        if col:
+            if col.isdigit():
+                col = int(col) - self.line_col_base[1]
+            else:
+                col = len(col)
+            match_dict["col"] = col
+        else:
+            match_dict["col"] = None
+
+        # get near
+        mnear = re.search(r': (?P<near>[\w]+)$', match_dict["message"])
+        if mnear is not None:
+            match_dict["near"] = mnear.group("near")
+        else:
+            vls = self.get_view_settings()
+            near_map = vls.get('message_near_map', [])
+            for e in near_map:
+                if re.match(e[0], match_dict["message"]):
+                    match_dict["near"] = e[1]
+
+        return LintMatch(**match_dict)
+
     def tmpfile(self, cmd, code, suffix=None):
+        """Override tmpfile()"""
+
         if suffix is None:
             suffix = self.get_tempfile_suffix()
 

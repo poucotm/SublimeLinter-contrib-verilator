@@ -12,7 +12,7 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator), or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
+ * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)(update for verilator-4.008, 1/1/2019),20, or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 #### Verilator Original vs. Modified Version
@@ -41,6 +41,18 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
     {
         "verilator": {
             "lint_mode": "load_save",
+            "styles" : [
+                {
+                    "types": ["warning"],
+                    "mark_style": "outline",
+                    "icon": "Packages/SublimeLinter/gutter-themes/Knob/warning.png"
+                },
+                {
+                    "types": ["error"],
+                    "mark_style": "fill",
+                    "icon": "Packages/SublimeLinter/gutter-themes/Knob/error.png"
+                }
+            ],
             "args": [
                 "--error-limit",
                 "500",
@@ -57,13 +69,18 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wno-WIDTH",
                 "-Wno-STMTDLY"
             ],
-            "excludes": [],
-            "extension": [
-                ".v"
-            ],
             "ignore_match": [
                 "Unsupported:",
                 "\\[IGNDEF\\]"
+            ],
+            // additional option to filter file type
+            "extension": [
+                ".v"
+            ],
+            // additional option for better highlighting near
+            "message_near_map": [
+                ["Case values", "case"],
+                ["Suggest casez", "casex"]
             ]
         }
     }
