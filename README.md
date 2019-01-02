@@ -12,7 +12,7 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)(update for verilator-4.008, 1/1/2019),20, or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
+ * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)(update for verilator-4.008, 1/2/2019) or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 #### Verilator Original vs. Modified Version
@@ -69,7 +69,7 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wno-WIDTH",
                 "-Wno-STMTDLY"
             ],
-            "ignore_match": [
+            "filter_errors": [
                 "Unsupported:",
                 "\\[IGNDEF\\]"
             ],
@@ -95,7 +95,7 @@ __'Shift+F1'__ : SublimeLinter Lint This View
 ### Troubleshooting
 
 Turn on SublimeLinter's __*Debug Mode*__ and Open the console of Sublime Text. You can check the communication status from SublimeLinter to Verilator.
-You can also add your own __*ignore_match*__ messages by using them.
+You can also add your own __*filter_errors*__ messages by using them.
 
 ```
 SublimeLinter: verilator: shift_reg.v ['D:\\Program\\verilator-3.902\\verilator_bin.exe', '--lint-only', ...

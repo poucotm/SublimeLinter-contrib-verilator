@@ -30,7 +30,7 @@ class Verilator(Linter):
     tempfile_suffix = 'verilog'
     multiline = False
     defaults = {
-        'selector' : 'source.verilog, source.systemverilog'
+        'selector': 'source.verilog, source.systemverilog'
     }
 
     if sublime.platform() == 'windows':
@@ -62,8 +62,7 @@ class Verilator(Linter):
     def parse_output(self, proc, virtual_view):
         """Override parse_output()"""
 
-        output = proc.combined_output
-        return self.parse_output_via_regex(output, virtual_view)
+        return self.parse_output_via_regex(proc, virtual_view)
 
     def split_match(self, match):
         """Override split_match()"""
@@ -113,16 +112,31 @@ class Verilator(Linter):
             suffix = self.get_tempfile_suffix()
 
         code = self.mask_code(code)
+        twrp = self.multiple_module(code)
 
-        with make_temp_file(suffix, code) as file:
-            ctx = get_view_context(self.view)
-            ctx['file_on_disk'] = self.filename
-            if sublime.platform() == 'windows':
-                file.name = re.sub(re.compile(r'\\'), '/', file.name)
-            ctx['temp_file'] = file.name
-            cmd = self.finalize_cmd(
-                cmd, ctx, at_value=file.name, auto_append=True)
-            return self._communicate(cmd)
+        if twrp is None:
+            with make_temp_file(suffix, code) as file:
+                ctx = get_view_context(self.view)
+                ctx['file_on_disk'] = self.filename
+                if sublime.platform() == 'windows':
+                    file.name = re.sub(re.compile(r'\\'), '/', file.name)
+                ctx['temp_file'] = file.name
+                cmd.append(file.name)
+                return str(self._communicate(cmd))
+        else:
+            with make_temp_file(suffix, code) as file:
+                with make_temp_file(suffix, twrp) as wrap:
+                    ctx = get_view_context(self.view)
+                    ctx['file_on_disk'] = self.filename
+                    if sublime.platform() == 'windows':
+                        file.name = re.sub(re.compile(r'\\'), '/', file.name)
+                        wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
+                    ctx['temp_file'] = file.name
+                    cmd.append(file.name)
+                    cmd.append(wrap.name)
+                    out = str(self._communicate(cmd))
+                    out = re.sub(wrap.name, '', out)
+                    return out
 
     def mask_code(self, code):
         txts = re.compile(SYN_PAT, re.DOTALL).findall(code)
@@ -131,3 +145,16 @@ class Verilator(Linter):
             repstr = '\n' * nlines
             code = code.replace(txt, repstr)
         return code
+
+    def multiple_module(self, code):
+        code = re.sub(re.compile(r'/\*.*?\*/', re.DOTALL), '', code)
+        code = re.sub(re.compile(r'//.*?\n'), '', code)
+        mods = re.compile(r'(?<!\S)module\s+(?P<name>[\w]+).+?(?<!\S)endmodule(?!\S)', re.DOTALL).findall(code)
+        if len(mods) > 0:
+            twrp = 'module YGmpvTABcdCDefExIVVx;'
+            for m in mods:
+                twrp += m + ' i_' + m + '();'
+            twrp += 'endmodule'
+            return twrp
+        else:
+            return None
