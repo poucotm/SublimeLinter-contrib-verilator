@@ -12,7 +12,8 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator)(update for verilator-4.008, 1/2/2019) or [compiled version for Windows](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator.zip) with 2 MinGW libraries.
+ * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.008, v1.2.2) 
+   or download [compiled version for Windows (v1.2.2)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.2.2.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 #### Verilator Original vs. Modified Version
@@ -23,8 +24,10 @@ __Verilator__ originally simulates all entities having all __*include*__ and __*
 
  * -Wno-IGNINC : Ignores __*include*__ files
  * -Wno-IGNDEF : Ignores __*define*__ which may have been defined outside
- * -Wno-IGNMOD : Ignores __*module*__ instances
+ * -Wno-IGNMOD : Ignores __*module*__ instances defined outside
  * -Wno-IGNUNUSED : Ignore __*unused singnal*__ warning connected to externally defined module instance
+ * -Wno-OUTPUTPINEMPTY : Ignore __*output pin empty connection*__ warning <-> PINCONNECTEMPTY (input,output,inout)
+ * -Wno-INPUTPINEMPTY : Ignore __*input pin empty connection*__ warning <-> PINCONNECTEMPTY (input,output,inout)
 
 ### Screenshot
 
@@ -44,13 +47,13 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
             "styles" : [
                 {
                     "types": ["warning"],
-                    "mark_style": "outline",
-                    "icon": "Packages/SublimeLinter/gutter-themes/Knob/warning.png"
+                    "mark_style": "squiggly_underline",
+                    "icon": "Packages/SublimeLinter/gutter-themes/Default/cog.png"
                 },
                 {
                     "types": ["error"],
                     "mark_style": "fill",
-                    "icon": "Packages/SublimeLinter/gutter-themes/Knob/error.png"
+                    "icon": "Packages/SublimeLinter/gutter-themes/Default/cog.png"
                 }
             ],
             "args": [
@@ -67,7 +70,9 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wno-IGNDEF",
                 "-Wno-IGNUNUSED",
                 "-Wno-WIDTH",
-                "-Wno-STMTDLY"
+                "-Wno-STMTDLY",
+                "-Wno-PINCONNECTEMPTY",
+                "-Wno-OUTPUTPINEMPTY"
             ],
             "filter_errors": [
                 "Unsupported:",
