@@ -1,4 +1,4 @@
 [
     { "keys": ["f1"], "command": "sublime_linter_panel_toggle" },
-    { "keys": ["shift+f1"], "command": "sublimelinter_lint" }
+    { "keys": ["shift+f1"], "command": "sublime_linter_lint" }
 ]
