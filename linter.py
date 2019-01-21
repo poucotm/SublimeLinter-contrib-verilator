@@ -112,31 +112,21 @@ class Verilator(Linter):
             suffix = self.get_tempfile_suffix()
 
         code = self.mask_code(code)
-        twrp = self.multiple_module(code)
+        twrp = self.parse_verilog(code)
 
-        if twrp is None:
-            with make_temp_file(suffix, code) as file:
+        with make_temp_file(suffix, code) as file:
+            with make_temp_file(suffix, twrp) as wrap:
                 ctx = get_view_context(self.view)
                 ctx['file_on_disk'] = self.filename
                 if sublime.platform() == 'windows':
                     file.name = re.sub(re.compile(r'\\'), '/', file.name)
+                    wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
                 ctx['temp_file'] = file.name
                 cmd.append(file.name)
-                return str(self._communicate(cmd))
-        else:
-            with make_temp_file(suffix, code) as file:
-                with make_temp_file(suffix, twrp) as wrap:
-                    ctx = get_view_context(self.view)
-                    ctx['file_on_disk'] = self.filename
-                    if sublime.platform() == 'windows':
-                        file.name = re.sub(re.compile(r'\\'), '/', file.name)
-                        wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
-                    ctx['temp_file'] = file.name
-                    cmd.append(file.name)
-                    cmd.append(wrap.name)
-                    out = str(self._communicate(cmd))
-                    out = re.sub(wrap.name, '', out)
-                    return out
+                cmd.append(wrap.name)
+                out = str(self._communicate(cmd))
+                out = re.sub(wrap.name, '', out)
+                return out
 
     def mask_code(self, code):
         txts = re.compile(SYN_PAT, re.DOTALL).findall(code)
@@ -146,15 +136,70 @@ class Verilator(Linter):
             code = code.replace(txt, repstr)
         return code
 
-    def multiple_module(self, code):
+    def parse_verilog(self, code):
         code = re.sub(re.compile(r'/\*.*?\*/', re.DOTALL), '', code)
         code = re.sub(re.compile(r'//.*?\n'), '', code)
-        mods = re.compile(r'(?<!\S)module\s+(?P<name>[\w]+).+?(?<!\S)endmodule(?!\S)', re.DOTALL).findall(code)
-        if len(mods) > 0:
-            twrp = 'module YGmpvTABcdCDefExIVVx;'
-            for m in mods:
-                twrp += m + ' i_' + m + '();'
-            twrp += 'endmodule'
-            return twrp
-        else:
-            return None
+        code = re.sub(re.compile(r';'), '; ', code)
+
+        mobj = re.compile(r'(?<!\S)module\s+(?P<mname>[\w]+).*?;(?P<txts>.*?)(?<!\S)endmodule(?!\S)', re.DOTALL)
+        iobj = re.compile(r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>.*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>.*?)\)[\s]*;', re.DOTALL)
+        pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*\(.*?\)|[\s]*(?P<ndot>[\w]+)', re.DOTALL)
+
+        # modules
+        defmods = set([])
+        insmods = {}
+        for m in mobj.finditer(code):
+            defmods.add(m.group('mname'))
+            # instances
+            for i in iobj.finditer(m.group('txts')):
+                if not i.group('mname') in defmods:
+                    if not i.group('mname') in insmods:
+                        insmods[i.group('mname')] = {}
+                        insmods[i.group('mname')]['param'] = []
+                        insmods[i.group('mname')]['ports'] = []
+                    # params
+                    parmnumb = 0
+                    if i.group('params'):
+                        for p in i.group('params').split(','):
+                            s = pobj.match(p)
+                            if s:
+                                dotp = s.group('dotp')
+                                ndot = s.group('ndot')
+                                if dotp and dotp not in insmods[i.group('mname')]['param']:
+                                    insmods[i.group('mname')]['param'].append(dotp)
+                                elif ndot:
+                                    parmnumb += 1
+                                    ndot = "prm_CtfVFslZ_{}".format(parmnumb)
+                                    if ndot not in insmods[i.group('mname')]['param']:
+                                        insmods[i.group('mname')]['param'].append(ndot)
+                    # ports
+                    pinnumb = 0
+                    if i.group('ports'):
+                        for p in i.group('ports').split(','):
+                            s = pobj.match(p)
+                            if s:
+                                dotp = s.group('dotp')
+                                ndot = s.group('ndot')
+                                if dotp and dotp not in insmods[i.group('mname')]['ports']:
+                                    insmods[i.group('mname')]['ports'].append(dotp)
+                                elif ndot:
+                                    pinnumb += 1
+                                    ndot = "pin_CtfVFslZ_{}".format(pinnumb)
+                                    if ndot not in insmods[i.group('mname')]['ports']:
+                                        insmods[i.group('mname')]['ports'].append(ndot)
+        anotherv = ''
+        # define modules for instances
+        for modn, link in insmods.items():
+            for i, k in enumerate(link['param']):
+                link['param'][i] = 'parameter ' + link['param'][i] + ' = 0'
+            for i, k in enumerate(link['ports']):
+                link['ports'][i] = 'input ' + link['ports'][i]
+            anotherv += 'module {0} #({1})({2}); endmodule\n'.format(modn, ','.join(link['param']), ','.join(link['ports']))
+        # define wrapper module for multiple modules
+        if len(defmods) > 1:
+            anotherv += 'module YGmpvTABcdCDefExIVVx;\n'
+            for m in defmods:
+                anotherv += m + ' i_' + m + '();\n'
+            anotherv += 'endmodule'
+
+        return anotherv

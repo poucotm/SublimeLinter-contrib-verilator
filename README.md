@@ -24,10 +24,6 @@ __Verilator__ originally simulates all entities having all __*include*__ and __*
 
  * -Wno-IGNINC : Ignores __*include*__ files
  * -Wno-IGNDEF : Ignores __*define*__ which may have been defined outside
- * -Wno-IGNMOD : Ignores __*module*__ instances defined outside
- * -Wno-IGNUNUSED : Ignore __*unused singnal*__ warning connected to externally defined module instance
- * -Wno-OUTPUTPINEMPTY : Ignore __*output pin empty connection*__ warning <-> PINCONNECTEMPTY (input,output,inout)
- * -Wno-INPUTPINEMPTY : Ignore __*input pin empty connection*__ warning <-> PINCONNECTEMPTY (input,output,inout)
 
 ### Screenshot
 
@@ -66,12 +62,11 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wall",
                 "-Wno-DECLFILENAME",
                 "-Wno-IGNINC",
-                "-Wno-IGNMOD",
                 "-Wno-IGNDEF",
-                "-Wno-IGNUNUSED",
                 "-Wno-WIDTH",
                 "-Wno-STMTDLY",
                 "-Wno-PINCONNECTEMPTY",
+                "-Wno-INPUTPINEMPTY",
                 "-Wno-OUTPUTPINEMPTY"
             ],
             "filter_errors": [

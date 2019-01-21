@@ -7,4 +7,4 @@ install:
   - "pip install flake8"
 
 script:
-  - flake8 . --max-line-length=120 --exclude=__init__.py,linter-plugin-template,docs
+  - flake8 . --max-line-length=160 --exclude=__init__.py,linter-plugin-template,docs
