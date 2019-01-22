@@ -145,7 +145,7 @@ class Verilator(Linter):
         lnks = r'[\w\s\.\,\(\)\[\]\{\}\"\'\:\+\-\*\/]'
         insp = r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>' + lnks + r'*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>' + lnks + r'*?)\)[\s]*;'
         iobj = re.compile(insp, re.DOTALL)
-        pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*\(.*?\)|[\s]*(?P<ndot>.+)', re.DOTALL)
+        pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*|[\s]*(?P<ndot>.+)', re.DOTALL)
 
         # modules
         defmods = set([])
@@ -162,7 +162,8 @@ class Verilator(Linter):
                     # params
                     parmnumb = 0
                     if i.group('params'):
-                        params = re.sub(re.compile(r'\{.*?\}', re.DOTALL), '', i.group('params'))
+                        params = re.sub(re.compile(r'\(.*?\)\s*(?=,)', re.DOTALL), '', i.group('params'))
+                        params = re.sub(re.compile(r'\(.*?\)\s*(?=\Z)', re.DOTALL), '', params)
                         for p in params.split(','):
                             s = pobj.match(p)
                             if s:
@@ -178,7 +179,8 @@ class Verilator(Linter):
                     # ports
                     pinnumb = 0
                     if i.group('ports'):
-                        ports = re.sub(re.compile(r'\{.*?\}', re.DOTALL), '', i.group('ports'))
+                        ports = re.sub(re.compile(r'\(.*?\)\s*(?=,)', re.DOTALL), '', i.group('ports'))
+                        ports = re.sub(re.compile(r'\(.*?\)\s*(?=\Z)', re.DOTALL), '', ports)
                         for p in ports.split(','):
                             s = pobj.match(p)
                             if s:
