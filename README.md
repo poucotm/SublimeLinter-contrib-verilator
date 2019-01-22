@@ -65,6 +65,7 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wno-IGNDEF",
                 "-Wno-WIDTH",
                 "-Wno-STMTDLY",
+                "-Wno-UNDRIVEN",
                 "-Wno-PINCONNECTEMPTY",
                 "-Wno-INPUTPINEMPTY",
                 "-Wno-OUTPUTPINEMPTY"
