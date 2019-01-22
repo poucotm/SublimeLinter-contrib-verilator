@@ -162,7 +162,8 @@ class Verilator(Linter):
                     # params
                     parmnumb = 0
                     if i.group('params'):
-                        for p in i.group('params').split(','):
+                        params = re.sub(re.compile(r'\{.*?\}', re.DOTALL), '', i.group('params'))
+                        for p in params.split(','):
                             s = pobj.match(p)
                             if s:
                                 dotp = s.group('dotp')
@@ -177,7 +178,8 @@ class Verilator(Linter):
                     # ports
                     pinnumb = 0
                     if i.group('ports'):
-                        for p in i.group('ports').split(','):
+                        ports = re.sub(re.compile(r'\{.*?\}', re.DOTALL), '', i.group('ports'))
+                        for p in ports.split(','):
                             s = pobj.match(p)
                             if s:
                                 dotp = s.group('dotp')
