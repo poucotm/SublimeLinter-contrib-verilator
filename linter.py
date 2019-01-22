@@ -142,8 +142,10 @@ class Verilator(Linter):
         code = re.sub(re.compile(r';'), '; ', code)
 
         mobj = re.compile(r'(?<!\S)module\s+(?P<mname>[\w]+).*?;(?P<txts>.*?)(?<!\S)endmodule(?!\S)', re.DOTALL)
-        iobj = re.compile(r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>.*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>.*?)\)[\s]*;', re.DOTALL)
-        pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*\(.*?\)|[\s]*(?P<ndot>[\w]+)', re.DOTALL)
+        lnks = r'[\w\s\.\,\(\)\[\]\{\}\"\'\:\+\-\*\/]'
+        insp = r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>' + lnks + r'*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>' + lnks + r'*?)\)[\s]*;'
+        iobj = re.compile(insp, re.DOTALL)
+        pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*\(.*?\)|[\s]*(?P<ndot>.+)', re.DOTALL)
 
         # modules
         defmods = set([])
