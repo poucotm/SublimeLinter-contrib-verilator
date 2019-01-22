@@ -197,7 +197,7 @@ class Verilator(Linter):
             for i, k in enumerate(link['param']):
                 link['param'][i] = 'parameter ' + link['param'][i] + ' = 0'
             for i, k in enumerate(link['ports']):
-                link['ports'][i] = 'input [16383:0] ' + link['ports'][i]
+                link['ports'][i] = 'input [8191:0] ' + link['ports'][i]
             anotherv += 'module {0} #({1})({2}); endmodule\n'.format(modn, ','.join(link['param']), ','.join(link['ports']))
         # define wrapper module for multiple modules
         if len(defmods) > 1:
