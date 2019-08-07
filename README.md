@@ -12,8 +12,8 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.008, v1.2.2) 
-   or download [compiled version for Windows (v1.2.2)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.2.2.zip) with 2 MinGW libraries.
+ * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.016, v1.3.0) 
+   or download [compiled version for Windows (v1.3.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.3.0.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 #### Verilator Original vs. Modified Version
@@ -56,7 +56,8 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "--error-limit",
                 "500",
                 "--default-language",
-                "1800-2012",
+                // "1800-2017", // systemverilog
+                "1364-2005", // verilog
                 "--bbox-sys",
                 "--bbox-unsup",
                 "-Wall",
