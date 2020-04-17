@@ -50,7 +50,7 @@ class Verilator(Linter):
     def lint(self, code, view_has_changed):
         """Override lint() for to check file extension"""
 
-        vls = self.get_view_settings()
+        vls = self.settings
         ext_setting = vls.get('extension', [])
         if len(ext_setting) > 0:
             ext = os.path.splitext(self.filename)[1].lower()
@@ -100,7 +100,7 @@ class Verilator(Linter):
         if mnear is not None:
             error["near"] = mnear.group("near")
         else:
-            vls = self.get_view_settings()
+            vls = self.settings
             near_map = vls.get('message_near_map', [])
             for e in near_map:
                 if re.match(e[0], error["message"]):
