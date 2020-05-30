@@ -141,6 +141,7 @@ class Verilator(Linter):
 
     def parse_verilog(self, code):
         code = re.sub(re.compile(r'/\*.*?\*/', re.DOTALL), '', code)
+        code = re.sub(re.compile(r'\(\*.*?\*\)', re.DOTALL), '', code)
         code = re.sub(re.compile(r'//.*?\n'), '', code)
         code = re.sub(re.compile(r';'), '; ', code)
 
