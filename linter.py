@@ -41,14 +41,14 @@ class Verilator(Linter):
     regex = (
         r'((?P<warning>%Warning)|(?P<error>%Error))'
         r'(-(?P<code>.*?)|(.*?)): '
-        r'(?P<file>{0}):(?P<line>\d+): '
+        r'(?P<file>{0}):(?P<line>\d+):((?P<col>\d+):|) '
         r'(?P<message>.*)'
         .format(filepath)
     )
 
     """ SublimeLinter 4 """
     def lint(self, code, view_has_changed):
-        """Override lint() for to check file extension"""
+        """Override lint() to check file extension"""
 
         vls = self.settings
         ext_setting = vls.get('extension', [])
