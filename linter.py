@@ -137,6 +137,11 @@ class Verilator(Linter):
             nlines = len(txt.splitlines())
             repstr = '\n' * nlines
             code = code.replace(txt, repstr)
+        oobj = re.compile(r'\s+output\s+(?P<type>(reg|wire|)).*?[,;\)]', re.DOTALL)
+        for o in oobj.finditer(code):
+            if not o.group('type'):
+                w = re.sub('output', 'output wire', o.group())
+                code = code.replace(o.group(), w)
         return code
 
     def parse_verilog(self, code):
