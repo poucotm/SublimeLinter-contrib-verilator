@@ -132,11 +132,19 @@ class Verilator(Linter):
                 return out
 
     def mask_code(self, code):
-        txts = re.compile(SYN_PAT, re.DOTALL).findall(code)
-        for txt in txts:
-            nlines = len(txt.splitlines())
-            repstr = '\n' * nlines
-            code = code.replace(txt, repstr)
+
+        def remove_comments(pattern, text):
+            txts = re.compile(pattern, re.DOTALL).findall(text)
+            for txt in txts:
+                blnk = '\n' * (txt.count('\n'))
+                text = text.replace(txt, blnk)
+            return text
+
+        code = remove_comments(SYN_PAT, code)
+        code = remove_comments(r'/\*.*?\*/', code)
+        code = remove_comments(r'\(\*.*?\*\)', code)
+        code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
+
         oobj = re.compile(r'(?<!\w)output\s+(?P<type>(reg|wire|)).*?(?=[,;\)])', re.DOTALL)
         for o in oobj.finditer(code):
             if not o.group('type'):
@@ -145,11 +153,6 @@ class Verilator(Linter):
         return code
 
     def parse_verilog(self, code):
-        code = re.sub(re.compile(r'/\*.*?\*/', re.DOTALL), '', code)
-        code = re.sub(re.compile(r'\(\*.*?\*\)', re.DOTALL), '', code)
-        code = re.sub(re.compile(r'//.*?\n'), '', code)
-        code = re.sub(re.compile(r';'), '; ', code)
-
         mobj = re.compile(r'(?<!\S)module\s+(?P<mname>[\w]+).*?;(?P<txts>.*?)(?<!\S)endmodule(?!\S)', re.DOTALL)
         lnks = r'[\w\s\.\,\(\)\[\]\{\}\"\'\`\:\+\-\*\/\$\!\~\%\^\&\|]'
         insp = r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>' + lnks + r'*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>' + lnks + r'*?)\)[\s]*;'
