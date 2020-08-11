@@ -136,14 +136,18 @@ class Verilator(Linter):
         def remove_comments(pattern, text):
             txts = re.compile(pattern, re.DOTALL).findall(text)
             for txt in txts:
-                blnk = '\n' * (txt.count('\n'))
-                text = text.replace(txt, blnk)
+                if isinstance(txt, str):
+                    blnk = '\n' * (txt.count('\n'))
+                    text = text.replace(txt, blnk)
+                elif isinstance(txt, tuple) and txt[1]:
+                    blnk = '\n' * (txt[1].count('\n'))
+                    text = text.replace(txt[1], blnk)
             return text
 
         code = remove_comments(SYN_PAT, code)
-        code = remove_comments(r'/\*.*?\*/', code)
-        code = remove_comments(r'\(\*.*?\*\)', code)
         code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
+        code = remove_comments(r'/\*.*?\*/', code)
+        code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
 
         oobj = re.compile(r'(?<!\w)output\s+(?P<type>(reg|wire|)).*?(?=[,;\)])', re.DOTALL)
         for o in oobj.finditer(code):
