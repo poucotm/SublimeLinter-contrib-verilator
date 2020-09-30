@@ -64,7 +64,6 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wno-DECLFILENAME",
                 "-Wno-IGNINC",
                 "-Wno-IGNDEF",
-                "-Wno-WIDTH",
                 "-Wno-STMTDLY",
                 "-Wno-UNDRIVEN",
                 "-Wno-PINCONNECTEMPTY",
@@ -73,7 +72,8 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
             ],
             "filter_errors": [
                 "Unsupported:",
-                "\\[IGNDEF\\]"
+                "\\[IGNDEF\\]",
+                "expects 8192 bits"
             ],
             // additional option to filter file type
             "extension": [
