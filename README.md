@@ -12,7 +12,7 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.016, v1.4.0) 
+ * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.016, v1.4.0)
    or download [compiled version for Windows (v1.4.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.4.0.zip) with 2 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
@@ -75,6 +75,8 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "\\[IGNDEF\\]",
                 "expects 8192 bits"
             ],
+            // call verilator directly without a wrapper (recommended when using original version, all sources are in the same directory)
+            "verilator_direct": false,
             // additional option to filter file type
             "extension": [
                 ".v"
@@ -91,7 +93,7 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
 
 ### Key Map
 
-__'F1'__ : SublimeLinter Show All Errors  
+__'F1'__ : SublimeLinter Show All Errors
 __'Shift+F1'__ : SublimeLinter Lint This View
 
 ### Troubleshooting
@@ -109,7 +111,7 @@ SublimeLinter: verilator output:
 
 ### Donate
 
-[![Doate Image](https://raw.githubusercontent.com/poucotm/Links/master/image/PayPal/donate-paypal.png)][PM]  
+[![Doate Image](https://raw.githubusercontent.com/poucotm/Links/master/image/PayPal/donate-paypal.png)][PM]
 Thank you for donating. It is helpful to continue to improve the plug-in.
 
 ### Credits

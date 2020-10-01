@@ -114,22 +114,34 @@ class Verilator(Linter):
         if suffix is None:
             suffix = self.get_tempfile_suffix()
 
-        code = self.mask_code(code)
-        twrp = self.parse_verilog(code)
-
-        with make_temp_file(suffix, code) as file:
-            with make_temp_file(suffix, twrp) as wrap:
+        wrpx = self.settings.get('verilator_direct', False)
+        if wrpx:
+            with make_temp_file(suffix, code) as file:
                 ctx = get_view_context(self.view)
                 ctx['file_on_disk'] = self.filename
                 if sublime.platform() == 'windows':
                     file.name = re.sub(re.compile(r'\\'), '/', file.name)
-                    wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
                 ctx['temp_file'] = file.name
                 cmd.append(file.name)
-                cmd.append(wrap.name)
                 out = str(self._communicate(cmd))
-                out = re.sub(wrap.name, '', out)
                 return out
+        else:
+            code = self.mask_code(code)
+            twrp = self.parse_verilog(code)
+
+            with make_temp_file(suffix, code) as file:
+                with make_temp_file(suffix, twrp) as wrap:
+                    ctx = get_view_context(self.view)
+                    ctx['file_on_disk'] = self.filename
+                    if sublime.platform() == 'windows':
+                        file.name = re.sub(re.compile(r'\\'), '/', file.name)
+                        wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
+                    ctx['temp_file'] = file.name
+                    cmd.append(file.name)
+                    cmd.append(wrap.name)
+                    out = str(self._communicate(cmd))
+                    out = re.sub(wrap.name, '', out)
+                    return out
 
     def mask_code(self, code):
 
