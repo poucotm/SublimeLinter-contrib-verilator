@@ -114,8 +114,21 @@ class Verilator(Linter):
         if suffix is None:
             suffix = self.get_tempfile_suffix()
 
-        wrpx = self.settings.get('verilator_direct', False)
-        if wrpx:
+        cmd.append('-Wno-DECLFILENAME')
+
+        extopt = self.settings.get('use_multiple_source', False)
+        prjopt = self.settings.get('search_project_path', False)
+        if extopt:
+            if prjopt:
+                prjfile = self.view.window().project_file_name()
+                if isinstance(prjfile, str) and prjfile != "":
+                    prjdat = self.view.window().project_data()
+                    prjsrc = prjdat.get('sources')
+                    for path in prjsrc:
+                        if sublime.platform() == 'windows':
+                            path = '-I' + re.sub(re.compile(r'\\'), '/', path)
+                            cmd.append(path)
+
             with make_temp_file(suffix, code) as file:
                 ctx = get_view_context(self.view)
                 ctx['file_on_disk'] = self.filename
@@ -123,7 +136,7 @@ class Verilator(Linter):
                     file.name = re.sub(re.compile(r'\\'), '/', file.name)
                 ctx['temp_file'] = file.name
                 cmd.append(file.name)
-                out = str(self._communicate(cmd))
+                out = self.pick_message(str(self._communicate(cmd)), file.name)
                 return out
         else:
             code = self.mask_code(code)
@@ -139,9 +152,15 @@ class Verilator(Linter):
                     ctx['temp_file'] = file.name
                     cmd.append(file.name)
                     cmd.append(wrap.name)
-                    out = str(self._communicate(cmd))
-                    out = re.sub(wrap.name, '', out)
+                    out = self.pick_message(str(self._communicate(cmd)), file.name)
                     return out
+
+    def pick_message(self, msg, name):
+        out = ''
+        for line in msg.splitlines():
+            if name in line:
+                out += line + '\n'
+        return out
 
     def mask_code(self, code):
 
