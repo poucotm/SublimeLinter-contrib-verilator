@@ -114,6 +114,18 @@ class Verilator(Linter):
         if suffix is None:
             suffix = self.get_tempfile_suffix()
 
+        wslopt = self.settings.get('use_wsl', False) if sublime.platform() == 'windows' else False
+        if wslopt:
+            cmd.insert(0, 'wsl')
+            cmd[1] = 'verilator_bin'
+            regexp = (
+                r'((?P<warning>%Warning)|(?P<error>%Error))'
+                r'(-(?P<code>.*?)|(.*?)): '
+                r'(?P<file>{0}):(?P<line>\d+):((?P<col>\d+):|) '
+                r'(?P<message>.*)'
+                .format(r'[^:]+')
+            )
+            self.regex = re.compile(regexp)
         cmd.append('-Wno-DECLFILENAME')
 
         extopt = self.settings.get('use_multiple_source', False)
@@ -126,6 +138,8 @@ class Verilator(Linter):
                     prjsrc = prjdat.get('sources')
                     for path in prjsrc:
                         if sublime.platform() == 'windows':
+                            if wslopt:
+                                path = '/mnt/' + re.sub(':', '', path)
                             path = '-I' + re.sub(re.compile(r'\\'), '/', path)
                             cmd.append(path)
 
@@ -133,10 +147,15 @@ class Verilator(Linter):
                 ctx = get_view_context(self.view)
                 ctx['file_on_disk'] = self.filename
                 if sublime.platform() == 'windows':
+                    if wslopt:
+                        orig_file = file.name
+                        file.name = '/mnt/' + re.sub(':', '', file.name)
                     file.name = re.sub(re.compile(r'\\'), '/', file.name)
                 ctx['temp_file'] = file.name
                 cmd.append(file.name)
                 out = self.pick_message(str(self._communicate(cmd)), file.name)
+                if wslopt:
+                    file.name = orig_file
                 return out
         else:
             code = self.mask_code(code)
@@ -147,12 +166,20 @@ class Verilator(Linter):
                     ctx = get_view_context(self.view)
                     ctx['file_on_disk'] = self.filename
                     if sublime.platform() == 'windows':
+                        if wslopt:
+                            orig_file = file.name
+                            orig_wrap = wrap.name
+                            file.name = '/mnt/' + re.sub(':', '', file.name)
+                            wrap.name = '/mnt/' + re.sub(':', '', wrap.name)
                         file.name = re.sub(re.compile(r'\\'), '/', file.name)
                         wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
                     ctx['temp_file'] = file.name
                     cmd.append(file.name)
                     cmd.append(wrap.name)
                     out = self.pick_message(str(self._communicate(cmd)), file.name)
+                    if wslopt:
+                        file.name = orig_file
+                        wrap.name = orig_wrap
                     return out
 
     def pick_message(self, msg, name):

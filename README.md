@@ -12,8 +12,8 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.016, v1.4.0)
-   or download [compiled version for Windows (v1.4.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.4.0.zip) with 2 MinGW libraries.
+ * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.016, v1.5.0)
+   or download compiled version [(32) for Windows (v1.5.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.5.0-32.zip) or [(64) for Windows (v1.5.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.5.0-64.zip) with 3 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 #### Verilator Original vs. Modified Version
@@ -89,7 +89,7 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
             "filter_errors": [
                 "Unsupported:",
                 "\\[IGNDEF\\]",
-                // "expects 8192 bits"
+                // "expects 8192 bits" // not to use -Wno-WIDTH
             ],
 
             // to lint based on single file (ignoring external module definition)
@@ -104,6 +104,9 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
 
             "use_multiple_source": false,
             "search_project_path": false,
+
+            // windows subsystem for linux (wsl verilator_bin)
+            "use_wsl": false,
 
             // additional option to filter file type
             "extension": [
