@@ -210,7 +210,7 @@ class Verilator(Linter):
         oobj = re.compile(r'(?<!\w)output\s+(?P<type>(reg|wire|)).*?(?=[,;\)])', re.DOTALL)
         for o in oobj.finditer(code):
             if not o.group('type'):
-                w = re.sub('output', 'output wire', o.group())
+                w = re.sub(re.compile('^output'), 'output wire', o.group())
                 code = code.replace(o.group(), w)
         return code
 
