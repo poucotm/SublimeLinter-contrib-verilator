@@ -70,6 +70,8 @@ class Verilator(Linter):
         .format(filepath)
     )
 
+    svobj = re.compile(r'[^\w](uvm_.*?|\$display|\$monitor|initial|final|real|fork|join|force|release|class|assert|bind|bins|chandle|clocking|cover|covergroup|import|export|constraint|modport)[^\w]')
+
     """ SublimeLinter 4 """
     def lint(self, code, view_has_changed):
         """Override lint() to check file extension"""
@@ -230,6 +232,11 @@ class Verilator(Linter):
         code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'/\*.*?\*/', code)
         code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
+
+        # don't check lib, testbench
+        nots = self.svobj.search(code)
+        if nots:
+            code = ''
 
         oobj = re.compile(r'(?<!\w)output\s+(?P<type>(reg|wire|)).*?(?=[,;\)])', re.DOTALL)
         for o in oobj.finditer(code):
