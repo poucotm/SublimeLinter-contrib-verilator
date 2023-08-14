@@ -165,7 +165,7 @@ class Verilator(Linter):
                     for path in prjsrc:
                         if sublime.platform() == 'windows':
                             if wslopt:
-                                path = '/mnt/' + re.sub(':', '', path)
+                                path = re.sub(r'(^[a-zA-Z])(:)(.*$)',lambda m : ''.join(['/mnt/',m.group(1).lower(),m.group(3)]),path)
                             path = '-I' + re.sub(re.compile(r'\\'), '/', path)
                             cmd.append(path)
 
@@ -175,7 +175,7 @@ class Verilator(Linter):
                 if sublime.platform() == 'windows':
                     if wslopt:
                         orig_file = file.name
-                        file.name = '/mnt/' + re.sub(':', '', file.name)
+                        file.name = re.sub(r'(^[a-zA-Z])(:)(.*$)',lambda m : ''.join(['/mnt/',m.group(1).lower(),m.group(3)]),file.name)
                     file.name = re.sub(re.compile(r'\\'), '/', file.name)
                 ctx['temp_file'] = file.name
                 cmd.append(file.name)
@@ -195,8 +195,8 @@ class Verilator(Linter):
                         if wslopt:
                             orig_file = file.name
                             orig_wrap = wrap.name
-                            file.name = '/mnt/' + re.sub(':', '', file.name)
-                            wrap.name = '/mnt/' + re.sub(':', '', wrap.name)
+                            file.name = re.sub(r'(^[a-zA-Z])(:)(.*$)',lambda m : ''.join(['/mnt/',m.group(1).lower(),m.group(3)]),file.name)
+                            wrap.name = re.sub(r'(^[a-zA-Z])(:)(.*$)',lambda m : ''.join(['/mnt/',m.group(1).lower(),m.group(3)]),wrap.name)
                         file.name = re.sub(re.compile(r'\\'), '/', file.name)
                         wrap.name = re.sub(re.compile(r'\\'), '/', wrap.name)
                     ctx['temp_file'] = file.name
