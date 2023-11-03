@@ -153,6 +153,7 @@ class Verilator(Linter):
             )
             self.regex = re.compile(regexp)
         cmd.append('-Wno-DECLFILENAME')
+        cmd.append('-Wno-PINMISSING')
 
         extopt = self.settings.get('use_multiple_source', False)
         prjopt = self.settings.get('search_project_path', False)
@@ -251,7 +252,10 @@ class Verilator(Linter):
         prtl = r'[\w\s\.\,\(\)\[\]\{\}\'\`\:\+\-\*\/\$\!\~\%\^\&\|]'
         insp = r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>' + prml + r'*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>' + prtl + r'*?)\)[\s]*;'
         iobj = re.compile(insp, re.DOTALL)
+        dobj = re.compile(r'(`ifdef\s+\w+|`ifndef\s+\w+|`elsif\s+\w+|`else|`endif)', re.DOTALL)
         pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*|[\s]*(?P<ndot>.+)', re.DOTALL)
+        pob0 = re.compile(r'\(.*?\)\s*(?=,)', re.DOTALL)
+        pob1 = re.compile(r'\(.*?\)\s*(?=\Z)', re.DOTALL)
 
         # modules
         defmods = set([])
@@ -268,9 +272,10 @@ class Verilator(Linter):
                     # params
                     parmnumb = 0
                     if i.group('params'):
-                        params = re.sub(re.compile(r'\(.*?\)\s*(?=,)', re.DOTALL), '', i.group('params'))
-                        params = re.sub(re.compile(r'\(.*?\)\s*(?=\Z)', re.DOTALL), '', params)
+                        params = re.sub(pob0, '', i.group('params'))
+                        params = re.sub(pob1, '', params)
                         for p in params.split(','):
+                            p = re.sub(dobj, '', p)
                             s = pobj.match(p)
                             if s:
                                 dotp = s.group('dotp')
@@ -285,13 +290,15 @@ class Verilator(Linter):
                     # ports
                     pinnumb = 0
                     if i.group('ports'):
-                        ports = re.sub(re.compile(r'\(.*?\)\s*(?=,)', re.DOTALL), '', i.group('ports'))
-                        ports = re.sub(re.compile(r'\(.*?\)\s*(?=\Z)', re.DOTALL), '', ports)
+                        ports = re.sub(pob0, '', i.group('ports'))
+                        ports = re.sub(pob1, '', ports)
                         for p in ports.split(','):
+                            p = re.sub(dobj, '', p)
                             s = pobj.match(p)
                             if s:
                                 dotp = s.group('dotp')
                                 ndot = s.group('ndot')
+                                print (dotp)
                                 if dotp and dotp not in insmods[i.group('mname')]['ports']:
                                     insmods[i.group('mname')]['ports'].append(dotp)
                                 elif ndot:
@@ -307,12 +314,11 @@ class Verilator(Linter):
                 link['param'][i] = 'parameter ' + link['param'][i] + ' = 0'
             for i, k in enumerate(link['ports']):
                 link['ports'][i] = 'input [8191:0] ' + link['ports'][i]
-            anotherv += 'module {0} #({1})({2}); endmodule\n'.format(modn, ','.join(link['param']), ','.join(link['ports']))
+            anotherv += 'module {0} #({1})({2}); endmodule\n'.format(modn, ', '.join(link['param']), ', '.join(link['ports']))
         # define wrapper module for multiple modules
         if len(defmods) > 1:
             anotherv += 'module YGmpvTABcdCDefExIVVx;\n'
             for m in defmods:
                 anotherv += m + ' i_' + m + '();\n'
             anotherv += 'endmodule'
-
         return anotherv
