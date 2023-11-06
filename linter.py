@@ -298,7 +298,6 @@ class Verilator(Linter):
                             if s:
                                 dotp = s.group('dotp')
                                 ndot = s.group('ndot')
-                                print (dotp)
                                 if dotp and dotp not in insmods[i.group('mname')]['ports']:
                                     insmods[i.group('mname')]['ports'].append(dotp)
                                 elif ndot:
