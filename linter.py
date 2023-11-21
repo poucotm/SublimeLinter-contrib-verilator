@@ -230,8 +230,8 @@ class Verilator(Linter):
             return text
 
         code = remove_comments(SYN_PAT, code)
-        code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'/\*.*?\*/', code)
+        code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
 
         # don't check lib, testbench
