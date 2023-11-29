@@ -1,6 +1,6 @@
 # SublimeLinter-contrib-verilator
 
-[![Package Control](https://packagecontrol.herokuapp.com/downloads/SublimeLinter-contrib-verilator.svg?style=round-square)](https://packagecontrol.io/packages/SublimeLinter-contrib-verilator) [![Build Status](https://api.travis-ci.org/poucotm/SublimeLinter-contrib-verilator.svg?branch=master)](https://travis-ci.org/poucotm/SublimeLinter-contrib-verilator)
+[![Package Control](https://img.shields.io/packagecontrol/dt/SublimeLinter-contrib-verilator?logo=github&color=FF1919)][PKG]
 [![PayPal](https://img.shields.io/badge/paypal-donate-blue.svg)][PM]
 
 This linter plugin for [SublimeLinter][docs] provides an interface to __Verilator__.
@@ -160,3 +160,4 @@ When you have an issue, tell me through [https://github.com/poucotm/SublimeLinte
 [linter-install]: https://www.veripool.org/projects/verilator/wiki/Installing
 [PP]:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=89YVNDSC7DZHQ "PayPal"
 [PM]:https://www.paypal.me/poucotm/2.5 "PayPal"
+[PKG]:https://packagecontrol.io/packages/SublimeLinter-contrib-verilator "SublimeLinter-contrib-verilator"
