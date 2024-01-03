@@ -16,11 +16,17 @@ import re
 
 
 # translate off/on
-SYN_PAT = \
+SYN_PAT0 = \
  r"\/\*\s*synopsys\s+translate_off\s*\*\/" +\
  r".*?\/\*\s*synopsys\s+translate_on\s*\*\/[\n\r]|" +\
  r"\/\*\s*synthesis\s+translate_off\s*\*\/" +\
  r".*?\/\*\s*synthesis\s+translate_on\s*\*\/[\n\r]"
+
+SYN_PAT1 = \
+ r"\/\/\s*synopsys\s+translate_off\s*" +\
+ r".*?\/\/\s*synopsys\s+translate_on\s*[\n\r]|" +\
+ r"\/\/\s*synthesis\s+translate_off\s*" +\
+ r".*?\/\/\s*synthesis\s+translate_on\s*[\n\r]"
 
 # keywords
 KEYWORDS = ['alias', 'always', 'always_comb', 'always_ff', 'always_latch', 'and', 'assert', 'assign', 'assume',
@@ -229,7 +235,8 @@ class Verilator(Linter):
                     text = text.replace(txt[1], blnk)
             return text
 
-        code = remove_comments(SYN_PAT, code)
+        code = remove_comments(SYN_PAT0, code)
+        code = remove_comments(SYN_PAT1, code)
         code = remove_comments(r'/\*.*?\*/', code)
         code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
