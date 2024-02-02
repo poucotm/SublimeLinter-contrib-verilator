@@ -12,20 +12,10 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__ - Guide from [here][linter-install]
- * __Modified version of Verilator__ - Get source from [https://github.com/poucotm/verilator](https://github.com/poucotm/verilator) (update for verilator-4.016, v1.5.0)
-   or download compiled version [(32) for Windows (v1.5.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.5.0-32.zip) or [(64) for Windows (v1.5.0)](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v1.5.0-64.zip) with 3 MinGW libraries.
+ * __Verilator pre-compiled Windows version__ - [Verilator 5.020](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v2.0.0.zip) with 3 MinGW libraries.
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
-#### Verilator Original vs. Modified Version
-
-__Verilator__ originally simulates all entities having all __*include*__ and __*module*__ files. If you miss even a file, it will generate an error message and stop simulation or linting. It is not good to be used with a editor. People don't open all files to edit or it is tired to pass the file list to Verilator every time. In order to lint single file based, the original codes are modified. It can ignore __*include*__ and externally defined module's instance and its port connection even if there's a real error in port connection. You can select one of them. If you want to use original version, you may have to put all files in the same directory. Because, __Verilator__ basically searches missed files in the same directory.
-
-#### Options for Modified Version
-
- * -Wno-IGNINC : Ignores __*include*__ files
- * -Wno-IGNDEF : Ignores __*define*__ which may have been defined outside
-
-#### Lint based on multiple files (higher than v2.8.0)
+### Lint based on multiple files
 
 Two options are added to support linting based on multiple files. If you set full paths, the original version of verilator can be used.
 
@@ -72,29 +62,18 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "--error-limit",
                 "500",
                 "--default-language",
-                // "1800-2017", // systemverilog
-                "1364-2005", // verilog
-                "--bbox-sys",
-                "--bbox-unsup",
+                "1800-2017",
                 "-Wall",
-                "-Wno-WIDTH",
-                "-Wno-IGNINC",
-                "-Wno-IGNDEF",
-                "-Wno-STMTDLY",
-                "-Wno-UNDRIVEN",
-                "-Wno-PINCONNECTEMPTY",
-                "-Wno-INPUTPINEMPTY",
-                "-Wno-OUTPUTPINEMPTY"
-            ],
-            "filter_errors": [
-                "Unsupported:",
-                "\\[IGNDEF\\]",
-                // "expects 8192 bits" // not to use -Wno-WIDTH
+                "-Wno-WIDTHTRUNC",
+                "-Wno-WIDTHEXPAND",
+                "-Wno-INITIALDLY",
             ],
 
-            // to lint based on single file (ignoring external module definition)
-            //   "use_multiple_source": false,
-            //   "search_project_path": false,
+            "filter_errors": [
+            ],
+
+            "use_multiple_source": false,
+            "search_project_path": false,
 
             // to lint based on multiple files (searching external sources - the same directory or project path)
             //   "use_multiple_source": true,
@@ -102,20 +81,16 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
             //  example) example.sublime-project
             //       "sources": [ "D:\\project\\srcs", "D:\\project\\working" ]
 
-            "use_multiple_source": false,
-            "search_project_path": false,
-
             // windows subsystem for linux (wsl verilator_bin)
             "use_wsl": false,
 
             // additional option to filter file type
             "extension": [
-                ".v"
+                ".v", ".sv"
             ],
+
             // additional option for better highlighting near
             "message_near_map": [
-                ["Case values", "case"],
-                ["Suggest casez", "casex"]
             ]
         }
     }
@@ -124,7 +99,7 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
 
 ### Key Map
 
-__'F1'__ : SublimeLinter Show All Errors
+__'F1'__ : SublimeLinter Show All Errors  
 __'Shift+F1'__ : SublimeLinter Lint This View
 
 ### Troubleshooting
@@ -142,7 +117,7 @@ SublimeLinter: verilator output:
 
 ### Donate
 
-[![Doate Image](https://raw.githubusercontent.com/poucotm/Links/master/image/PayPal/donate-paypal.png)][PM]
+[![Doate Image](https://raw.githubusercontent.com/poucotm/Links/master/image/PayPal/donate-paypal.png)][PM]  
 Thank you for donating. It is helpful to continue to improve the plug-in.
 
 ### Credits

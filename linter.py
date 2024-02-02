@@ -58,8 +58,10 @@ class Verilator(Linter):
 
     cmd = ('verilator_bin', '--lint-only')
     tempfile_suffix = 'verilog'
+    veri_vers = 5
+    veridebug = False
     multiline = False
-    defaults = {
+    defaults  = {
         'selector': 'source.verilog, source.systemverilog'
     }
 
@@ -76,7 +78,9 @@ class Verilator(Linter):
         .format(filepath)
     )
 
-    svobj = re.compile(r'[^\w](uvm_.*?|\$display|\$monitor|initial|final|real|fork|join|force|release|class|assert|bind|bins|chandle|clocking|cover|covergroup|import|export|constraint|modport)[^\w]')
+    svobj  = re.compile(r'[^\w](uvm_.*?|\$display|\$monitor|initial|final|real|fork|join|force|release|class|assert|bind|bins|chandle|clocking|cover|covergroup|import|export|constraint|modport)[^\w]')
+    uvmobj = re.compile(r'[^\w](uvm_.*?)[^\w]')
+    dotobj = re.compile(r'Can\'t find definition of .*? in dotted variable')
 
     """ SublimeLinter 4 """
     def lint(self, code, view_has_changed):
@@ -146,6 +150,8 @@ class Verilator(Linter):
         if suffix is None:
             suffix = self.get_tempfile_suffix()
 
+        self.veridebug = self.settings.get('debug', False)
+        self.veri_vers = self.settings.get('verilator_version', 4)
         wslopt = self.settings.get('use_wsl', False) if sublime.platform() == 'windows' else False
         if wslopt:
             cmd.insert(0, 'wsl')
@@ -158,8 +164,15 @@ class Verilator(Linter):
                 .format(r'[^:]+')
             )
             self.regex = re.compile(regexp)
+
+        cmd.append('--bbox-sys')
+        cmd.append('--bbox-unsup')
         cmd.append('-Wno-DECLFILENAME')
         cmd.append('-Wno-PINMISSING')
+        if self.veri_vers > 4:
+            cmd.append('-no-std')
+            cmd.append('--timing')
+            cmd.append('-Wno-EOFNEWLINE')
 
         extopt = self.settings.get('use_multiple_source', False)
         prjopt = self.settings.get('search_project_path', False)
@@ -193,6 +206,9 @@ class Verilator(Linter):
         else:
             code = self.mask_code(code)
             twrp = self.parse_verilog(code)
+            incs = self.get_include(code)
+            for inc in incs:
+                cmd.append('-I'+inc)
 
             with make_temp_file(suffix, code) as file:
                 with make_temp_file(suffix, twrp) as wrap:
@@ -218,6 +234,13 @@ class Verilator(Linter):
     def pick_message(self, msg, name):
         out = ''
         for line in msg.splitlines():
+            if sublime.platform() == 'windows' and self.veri_vers > 4:
+                name = re.sub(re.compile(r'/(tmp.*?\.)'), r'\\\1', name)
+            if self.veridebug:
+                print (name, line)
+            igno = self.dotobj.search(line)
+            if igno:
+                line = ''
             if name in line:
                 out += line + '\n'
         return out
@@ -240,11 +263,17 @@ class Verilator(Linter):
         code = remove_comments(r'/\*.*?\*/', code)
         code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
+        code = remove_comments(r'void\'\(.*?\)\s*(?=;)', code) # void'(std::randomize(dly)...
 
         # don't check lib, testbench
-        nots = self.svobj.search(code)
-        if nots:
-            code = ''
+        if self.veri_vers < 5:
+            nots = self.svobj.search(code)
+            if nots:
+                code = ''
+        else:
+            nots = self.uvmobj.search(code)
+            if nots:
+                code = ''
 
         oobj = re.compile(r'(?<!\w)output\s+(?P<type>(reg|wire|)).*?(?=[,;\)])', re.DOTALL)
         for o in oobj.finditer(code):
@@ -259,7 +288,6 @@ class Verilator(Linter):
         prtl = r'[\w\s\.\,\(\)\[\]\{\}\'\`\:\+\-\*\/\$\!\~\%\^\&\|]'
         insp = r'(?<!\S)(?P<mname>[\w]+)([\s]*\#[\s]*\((?P<params>' + prml + r'*?)\)|\s)[\s]*[\w]+[\s]*\((?P<ports>' + prtl + r'*?)\)[\s]*;'
         iobj = re.compile(insp, re.DOTALL)
-        dobj = re.compile(r'(`ifdef\s+\w+|`ifndef\s+\w+|`elsif\s+\w+|`else|`endif)', re.DOTALL)
         pobj = re.compile(r'[\s]*?\.[\s]*?(?P<dotp>[\w]+)[\s]*|[\s]*(?P<ndot>.+)', re.DOTALL)
         pob0 = re.compile(r'\(.*?\)\s*(?=,)', re.DOTALL)
         pob1 = re.compile(r'\(.*?\)\s*(?=\Z)', re.DOTALL)
@@ -282,7 +310,6 @@ class Verilator(Linter):
                         params = re.sub(pob0, '', i.group('params'))
                         params = re.sub(pob1, '', params)
                         for p in params.split(','):
-                            p = re.sub(dobj, '', p)
                             s = pobj.match(p)
                             if s:
                                 dotp = s.group('dotp')
@@ -300,7 +327,6 @@ class Verilator(Linter):
                         ports = re.sub(pob0, '', i.group('ports'))
                         ports = re.sub(pob1, '', ports)
                         for p in ports.split(','):
-                            p = re.sub(dobj, '', p)
                             s = pobj.match(p)
                             if s:
                                 dotp = s.group('dotp')
@@ -328,3 +354,17 @@ class Verilator(Linter):
                 anotherv += m + ' i_' + m + '();\n'
             anotherv += 'endmodule'
         return anotherv
+
+    def get_include(self, code):
+        iobj = re.compile(r'`include\s*"(?P<include>.+?)"', re.DOTALL)
+        incs = []
+        for i in iobj.finditer(code):
+            inc = i.group('include')
+            if os.path.isabs(inc):
+                incdir = os.path.dirname(inc)
+            else:
+                incdir = os.path.join(self.get_working_dir(), inc)
+            if sublime.platform() == 'windows':
+                incdir = re.sub(re.compile(r'\\'), '/', incdir)
+            incs.append(os.path.dirname(incdir))
+        return incs
