@@ -80,7 +80,7 @@ class Verilator(Linter):
 
     svobj  = re.compile(r'[^\w](uvm_.*?|\$display|\$monitor|initial|final|real|fork|join|force|release|class|assert|bind|bins|chandle|clocking|cover|covergroup|import|export|constraint|modport)[^\w]')
     uvmobj = re.compile(r'[^\w](uvm_.*?)[^\w]')
-    dotobj = re.compile(r'Can\'t find definition of .*? in dotted variable')
+    dotobj = re.compile(r'Can\'t find definition of .*? in dotted')
 
     """ SublimeLinter 4 """
     def lint(self, code, view_has_changed):
