@@ -235,7 +235,7 @@ class Verilator(Linter):
         out = ''
         for line in msg.splitlines():
             if sublime.platform() == 'windows' and self.veri_vers > 4:
-                name = re.sub(re.compile(r'/(tmp.*?\.)'), r'\\\1', name)
+                name = re.sub(re.compile(r'/(tmp.*?\.[\w]+?)$'), r'\\\1', name)
             if self.veridebug:
                 print (name, line)
             igno = self.dotobj.search(line)
@@ -264,6 +264,8 @@ class Verilator(Linter):
         code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
         code = remove_comments(r'void\'\(.*?\)\s*(?=;)', code) # void'(std::randomize(dly)...
+        code = remove_comments(r'import.*?;', code) # import ...
+        code = remove_comments(r'export.*?;', code) # export ...
 
         # don't check lib, testbench
         if self.veri_vers < 5:
