@@ -81,6 +81,7 @@ class Verilator(Linter):
     svobj  = re.compile(r'[^\w](uvm_.*?|\$display|\$monitor|initial|final|real|fork|join|force|release|class|assert|bind|bins|chandle|clocking|cover|covergroup|import|export|constraint|modport)[^\w]')
     uvmobj = re.compile(r'[^\w](uvm_.*?)[^\w]')
     dotobj = re.compile(r'Can\'t find definition of .*? in dotted')
+    ignore = []
 
     """ SublimeLinter 4 """
     def lint(self, code, view_has_changed):
@@ -241,6 +242,11 @@ class Verilator(Linter):
             igno = self.dotobj.search(line)
             if igno:
                 line = ''
+            else:
+                for i in self.ignore:
+                    if i in line:
+                        line = ''
+                        break
             if name in line:
                 out += line + '\n'
         return out
@@ -263,6 +269,7 @@ class Verilator(Linter):
         code = remove_comments(r'/\*.*?\*/', code)
         code = re.sub(re.compile(r'//.*?$', re.MULTILINE), '', code)
         code = remove_comments(r'(@\s*?\(\s*?\*\s*?\))|(\(\*.*?\*\))', code)
+        self.ignore = self.get_ignore(code)
         code = remove_comments(r'void\'\(.*?\)\s*(?=;)', code) # void'(std::randomize(dly)...
         code = remove_comments(r'import.*?;', code) # import ...
         code = remove_comments(r'export.*?;', code) # export ...
@@ -340,7 +347,6 @@ class Verilator(Linter):
                                     ndot = "pin_CtfVFslZ_{}".format(pinnumb)
                                     if ndot not in insmods[i.group('mname')]['ports']:
                                         insmods[i.group('mname')]['ports'].append(ndot)
-
         anotherv = ''
         # define modules for instances
         for modn, link in insmods.items():
@@ -370,3 +376,10 @@ class Verilator(Linter):
                 incdir = re.sub(re.compile(r'\\'), '/', incdir)
             incs.append(os.path.dirname(incdir))
         return incs
+
+    def get_ignore(self, code):
+        iobj = re.compile(r'(import|export).*?(function|task).*?(?P<name>[\w_]+?)\(', re.DOTALL)
+        igno = []
+        for i in iobj.finditer(code):
+            igno.append('\'' + i.group('name') + '\'')
+        return igno
