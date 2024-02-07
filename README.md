@@ -67,11 +67,15 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
                 "-Wno-WIDTHTRUNC",
                 "-Wno-WIDTHEXPAND",
                 "-Wno-INITIALDLY",
+                "-Wno-UNDRIVEN",
+                "-Wno-UNOPTFLAT",
+                "-Wno-UNUSEDPARAM",
+                "-Wno-SIDEEFFECT",
+                "-Wno-PINCONNECTEMPTY",
+                "-Wno-BLKSEQ",
             ],
 
-            "filter_errors": [
-            ],
-
+            "verilator_version"  : 5,
             "use_multiple_source": false,
             "search_project_path": false,
 
@@ -88,10 +92,6 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
             "extension": [
                 ".v", ".sv"
             ],
-
-            // additional option for better highlighting near
-            "message_near_map": [
-            ]
         }
     }
 }
