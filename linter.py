@@ -166,8 +166,9 @@ class Verilator(Linter):
                         if sublime.platform() == 'windows':
                             if wslopt:
                                 path = '/mnt/' + re.sub(':', '', path)
-                            path = '-I' + re.sub(re.compile(r'\\'), '/', path)
-                            cmd.append(path)
+                            path = re.sub(re.compile(r'\\'), '/', path)
+                        path = '-I' + path
+                        cmd.append(path)
 
             with make_temp_file(suffix, code) as file:
                 ctx = get_view_context(self.view)
