@@ -11,8 +11,15 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 ### Prerequisite
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
- * __Verilator installation__ - Guide from [here][linter-install]
- * __Verilator pre-compiled Windows version__ - [Verilator 5.020](https://raw.githubusercontent.com/poucotm/Links/master/tools/verilator/verilator-v2.0.0.zip) with 3 MinGW libraries.
+ * __Verilator installation__
+	- Original Guide from [here][linter-install]
+	- Use MSYS for Windows (Download [https://www.msys2.org](https://www.msys2.org/))
+
+	```bash
+	pacman -Syu
+	pacman -S mingw-w64-x86_64-verilator
+	```
+
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
 ### Lint based on multiple files
