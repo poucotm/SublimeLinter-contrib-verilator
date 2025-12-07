@@ -12,8 +12,9 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 
  * __SublimeLinter 4 installation__ - Guide from [here][installation]
  * __Verilator installation__
-	- Original Guide from [here][linter-install]
-	- Use MSYS for Windows (Download [https://www.msys2.org](https://www.msys2.org/))
+	
+	Original Guide from [here][linter-install]  
+	Use MSYS for Windows (Download [https://www.msys2.org](https://www.msys2.org/))
 
 ```bash
 	pacman -Syu
