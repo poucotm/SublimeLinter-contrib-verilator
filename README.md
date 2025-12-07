@@ -15,10 +15,10 @@ For more information, you can see here, [https://www.veripool.org/wiki/verilator
 	- Original Guide from [here][linter-install]
 	- Use MSYS for Windows (Download [https://www.msys2.org](https://www.msys2.org/))
 
-	```bash
+```bash
 	pacman -Syu
 	pacman -S mingw-w64-x86_64-verilator
-	```
+```
 
  * __Verilator PATH settings__ - SublimeLinter-contrib-verilator uses __*verilator_bin*__ or __*verilator_bin.exe*__ instead of __*verilator*__. You have to add __PATH__ environment variable for __*verilator_bin*__ or __*verilator_bin.exe*__
 
