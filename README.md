@@ -94,7 +94,7 @@ In order to set arguments of Verilator or control lint message, Use SublimeLinte
 
             // additional option to filter file type
             "extension": [
-                ".v", ".sv"
+                ".v", ".sv", ".svh"
             ],
         }
     }
